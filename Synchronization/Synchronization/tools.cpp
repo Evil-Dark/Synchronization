@@ -30,6 +30,7 @@ Times stamp2standard(int stampTime)
 Times char2time(char buff[255])
 {
 	char temp1[4], temp2[2], temp3[3];
+
 	Times standard;
 	for (int i = 0; i < 4; i++) {
 		temp1[i] = buff[i];
