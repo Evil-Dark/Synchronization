@@ -63,15 +63,8 @@ Times char2time(char buff[255])
 	return standard;
 }
 
-char* time2char(Times time)
-{
-	char *buff;
-	
-
-	return buff;
-}
-
-Times add_one_second(Times oldTime)
+/*时间增加1秒
+Times add_one_second1(Times oldTime)
 {
 	if (oldTime.Second < 59) {
 		oldTime.Second++;
@@ -92,8 +85,47 @@ Times add_one_second(Times oldTime)
 			}
 		}
 	}
-}
+}*/
 
+
+int add_one(char &ten, char &unit)
+{
+	if (unit == '9') {
+		unit = '0';
+		if (ten == '5') {
+			ten = '0';
+			return 1;//有进位
+		}
+		else {
+			ten += 1;
+			return 0;//无进位
+		}
+	}
+	else {
+		unit += 1;
+		return 0;//无进位
+	}
+}
+/*时间增加1秒*/
+void add_one_second(char buff[255])
+{
+	char *time = buff;
+	int hour = atoi((time + 11));
+
+	int temp = add_one(buff[17], buff[18]);
+	if (temp == 1) {
+		temp = add_one(buff[14], buff[15]);
+		if (temp == 1) {
+			if (hour < 23) {
+				add_one(buff[11], buff[12]);
+			}
+			else {
+				*(time + 11) = '0';
+				*(time + 12) = '0';
+			}
+		}
+	}
+}
 
 /*清洗数据，除去不需要的内容*/
 void clean_data(char* file, char *file_new, int len)

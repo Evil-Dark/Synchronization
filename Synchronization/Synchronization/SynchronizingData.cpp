@@ -1,5 +1,8 @@
+#include "stdio.h"
 #include "iostream"
+#include "stdlib.h"
 #include "tools.h"
+
 using namespace std;
 
 /*获取动捕鼠标按键对应时间段*/
@@ -64,7 +67,8 @@ void adjust_data(char *timeStamp[2],char buff[255], char *fileRead, char *fileWr
 			break;
 		}
 	}	
-
+	fclose(fRead);
+	fclose(fWrite);
 }
 
 char *replaceCH(char buff[255])
@@ -77,28 +81,40 @@ char *replaceCH(char buff[255])
 	return str;
 }
 
-void sum_total_frame(char *file, int *totalFrame)
+/*统计每秒帧数*/
+void sum_total_frame(char *file, int totalFrame[100])
 {
-	char buff[255], *temp;
+	char buff[100][255], *temp1, *temp2;
 	FILE *fp = NULL;
 	fp = fopen(file, "r");
-	Times time;
-	while (fgets(buff, 255, (FILE*)fp) != NULL) {
-		time = char2time(buff);
-		add_one_second(time);
+
+	int i = 1, j = 0;
+
+	fgets(buff[j], 255, (FILE*)fp);
+	add_one_second(buff[j]);
+	temp1 = buff[j];
+
+	while (fgets(buff[j+1], 255, (FILE*)fp) != NULL) {
+		temp2 = buff[j+1];
+		if (strncmp(temp1, temp2, 23) == 1) {
+			i++;
+		}
+		else {
+			printf("%s\n", temp2);
+			totalFrame[j] = i;
+			j++;
+			i = 1;
+			//每次从第一帧开始读秒
+			add_one_second(buff[0]);
+			temp1 = buff[0];
+			/*每次从读取到的第一帧开始读秒		
+			add_one_second(buff[j-1]);
+			temp1 = buff[j-1];			
+			*/
+		}
 	}
-
-
-
-	fgets(buff, 255, (FILE*)fp);
-	temp = buff;
-
-	int i = atoi((temp + 18));
-
-
-	*(temp + 18) = 'a';
-
-	printf("%d\n", i);
+	totalFrame[j] = i;
+	fclose(fp);
 }
 
 
@@ -111,8 +127,19 @@ int main()
 	char *file2 = "D:\\Data\\kinect时间戳样本.txt";
 	char *file3 = "D:\\Data\\kinect时间戳样本_New.txt";
 
-	clean_data(file2, file3, 23);
+	int totalFrame[30];
+	sum_total_frame(file2, totalFrame);
+
+	for (int i = 0; i < 27; i++) {
+		printf("%d\n", totalFrame[i]);
+	}
+
+
+	//clean_data(file2, file3, 23);
 	
+	//char *temp1 = "2018-11-08 17:21:25.636206";
+	//char *temp2 = "2018-11-08 16:21:25.637206";
+	//printf("%d\n", strncmp(temp1, temp2, 23));
 
 	//getTime(timeStamp, buff, file1, 2, 8);
 	//Times time = calibrateDate(buff[0]);
@@ -126,9 +153,9 @@ int main()
 	
 	//adjustData(timeStamp, buff[0], file2, file3);
 
-	Times time;
-	time = stamp2standard(1477478145);
-	printf("%d-%d-%d %d:%d:%d\n", time.Year, time.Mon, time.Day, time.Hour, time.Min, time.Second);
+	//Times time;
+	//time = stamp2standard(1477478145);
+	//printf("%d-%d-%d %d:%d:%d\n", time.Year, time.Mon, time.Day, time.Hour, time.Min, time.Second);
 
 
 	

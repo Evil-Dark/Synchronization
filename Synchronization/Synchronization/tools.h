@@ -18,7 +18,7 @@ Times stamp2standard(int stampTime);
 
 Times char2time(char buff[255]);
 
-Times add_one_second(Times oldTime);
+void add_one_second(char buff[255]);
 
 char *time2char(Times time);
 
