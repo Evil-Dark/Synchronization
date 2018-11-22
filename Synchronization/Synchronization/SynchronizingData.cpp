@@ -84,9 +84,8 @@ void sum_total_frame(char *file, int *totalFrame)
 	fp = fopen(file, "r");
 	Times time;
 	while (fgets(buff, 255, (FILE*)fp) != NULL) {
-		time = calibrate_date(buff);
+		time = char2time(buff);
 		add_one_second(time);
-		strncmp();
 	}
 
 
@@ -112,7 +111,7 @@ int main()
 	char *file2 = "D:\\Data\\kinect时间戳样本.txt";
 	char *file3 = "D:\\Data\\kinect时间戳样本_New.txt";
 
-	//clean_data(file2, file3, 23);
+	clean_data(file2, file3, 23);
 	
 
 	//getTime(timeStamp, buff, file1, 2, 8);

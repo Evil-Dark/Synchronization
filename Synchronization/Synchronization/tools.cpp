@@ -4,7 +4,7 @@
 
 
 /*将时间戳转为标准时间*/
-Times stamp_2_standard(int stampTime)
+Times stamp2standard(int stampTime)
 {
 	time_t tick = (time_t)stampTime;
 	struct tm tm;
@@ -27,7 +27,7 @@ Times stamp_2_standard(int stampTime)
 }
 
 /*将时间字符串转换为time结构体形式*/
-Times calibrate_date(char buff[255])
+Times char2time(char buff[255])
 {
 	char temp1[4], temp2[2], temp3[3];
 	Times standard;
