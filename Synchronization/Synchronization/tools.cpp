@@ -2,7 +2,6 @@
 #include "time.h"
 #include "iostream"
 
-
 /*将时间戳转为标准时间*/
 Times stamp2standard(int stampTime)
 {
@@ -63,31 +62,6 @@ Times char2time(char buff[255])
 	return standard;
 }
 
-/*时间增加1秒
-Times add_one_second1(Times oldTime)
-{
-	if (oldTime.Second < 59) {
-		oldTime.Second++;
-		return oldTime;
-	}
-	else {
-		oldTime.Second = 0 ;
-		if (oldTime.Min < 59) {
-			oldTime.Min++;
-		}
-		else {
-			oldTime.Min = 0;
-			if (oldTime.Hour < 24) {
-				oldTime.Hour++;
-			}
-			else {
-				oldTime.Hour = 0;
-			}
-		}
-	}
-}*/
-
-
 int add_one(char &ten, char &unit)
 {
 	if (unit == '9') {
@@ -144,4 +118,87 @@ void clean_data(char* file, char *file_new, int len)
 		strncat(buf, buff, len);//字符串拼接
 		fprintf(fWrite, "%s\n", buf);
 	}
+}
+
+/*时间戳比较*/
+int compare_time(char *time1, char *time2) //strncmp(time1, time2, 24);
+{
+	int len = strlen(time1) > strlen(time2) ? strlen(time2) : strlen(time1);
+	for (int i = 0; i < len; i++) {
+		if (time1[i] != '-' && time1[i] != '/') {
+			if (time1[i] > time2[i]) {
+				return 0;//time1时间晚
+			}
+			else if (time1[i] < time2[i]) {
+				return 2;//time1时间早
+			}
+			else {
+				continue;
+			}
+		}
+	}
+	return 1;//时间相等
+}
+
+/*帧数统计 for applewatch*/
+void sum_frames1(char *file, int *totalFrames)
+{
+	FILE *fp = NULL;
+	fp = fopen(file, "r");
+
+	char buff[2][255], *temp1, *temp2;
+	temp1 = buff[0];
+	temp2 = buff[1];
+
+	fgets(buff[0], 255, (FILE*)fp);
+	int i = 1, j = 0, k = 1;
+
+	while (fgets(buff[k], 255, (FILE*)fp) != NULL) {
+		if (atoi((temp1 + 0)) == atoi((temp2 + 0))) {
+			i++;
+		}
+		else {
+			printf("NO.%d Second: %dFrames\n", j+1, i);
+			k = k == 1 ? 0 : 1;
+			*(totalFrames + j) = i;
+			j++;
+			i = 1;
+		}
+	}
+	*(totalFrames + j) = i;
+	printf("NO.%d Second: %dFrames\n", j + 1, i);
+	printf("total %d Seconds!\n", j+1);
+	fclose(fp);
+}
+
+/*帧数统计 for kinect*/
+void sum_frames2(char *file, int *totalFrames)
+{
+	FILE *fp = NULL;
+	fp = fopen(file, "r");
+
+	char buff[2][255], *temp1, *temp2;
+	temp1 = buff[0];
+	temp2 = buff[1];
+
+	fgets(buff[0], 255, (FILE*)fp);
+	add_one_second(buff[0]);
+
+	int i = 1, j = 0;
+	while (fgets(buff[1], 255, (FILE*)fp) != NULL) {
+		if (strncmp(temp1, temp2, 23) == 1) {
+			i++;
+		}
+		else {
+			printf("NO.%d Second: %dFrames\n", j+1, i);
+			*(totalFrames + j) = i;
+			j++;
+			i = 1;
+			add_one_second(buff[0]);
+		}
+	}
+	*(totalFrames + j) = i;
+	printf("NO.%d Second: %dFrames\n", j + 1, i);
+	printf("total %d Seconds!\n", j+1);
+	fclose(fp);
 }

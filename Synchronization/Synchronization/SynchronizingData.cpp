@@ -25,26 +25,6 @@ void get_time(char *timeStamp[2], char buff[2][255], char *file, int begin, int 
 	fclose(fp);
 }
 
-/*时间戳比较*/
-int compare_time(char *time1, char *time2) //strncmp(time1, time2, 24);
-{
-	int len = strlen(time1) > strlen(time2) ? strlen(time2) : strlen(time1);
-	for (int i = 0; i < len; i++) {
-		if (time1[i] != '-' && time1[i] != '/' ) {
-			if (time1[i] > time2[i]) {
-				return 0;//time1时间晚
-			}
-			else if (time1[i] < time2[i]) {
-				return 2;//time1时间早
-			}
-			else {
-				continue;
-			}
-		}
-	}
-	return 1;//时间相等
-}
-
 /*截取对应时间段内数据*/
 void adjust_data(char *timeStamp[2],char buff[255], char *fileRead, char *fileWrite)
 {
@@ -71,70 +51,21 @@ void adjust_data(char *timeStamp[2],char buff[255], char *fileRead, char *fileWr
 	fclose(fWrite);
 }
 
-char *replaceCH(char buff[255])
-{
-	char *str = buff;
-	int len = strlen(str);
-	
-	printf("%d\n", len);
-
-	return str;
-}
-
-/*统计每秒帧数*/
-void sum_total_frame(char *file, int totalFrame[100])
-{
-	char buff[100][255], *temp1, *temp2;
-	FILE *fp = NULL;
-	fp = fopen(file, "r");
-
-	int i = 1, j = 0;
-
-	fgets(buff[j], 255, (FILE*)fp);
-	add_one_second(buff[j]);
-	temp1 = buff[j];
-
-	while (fgets(buff[j+1], 255, (FILE*)fp) != NULL) {
-		temp2 = buff[j+1];
-		if (strncmp(temp1, temp2, 23) == 1) {
-			i++;
-		}
-		else {
-			printf("%s\n", temp2);
-			totalFrame[j] = i;
-			j++;
-			i = 1;
-			//每次从第一帧开始读秒
-			add_one_second(buff[0]);
-			temp1 = buff[0];
-			/*每次从读取到的第一帧开始读秒		
-			add_one_second(buff[j-1]);
-			temp1 = buff[j-1];			
-			*/
-		}
-	}
-	totalFrame[j] = i;
-	fclose(fp);
-}
-
-
 int main()
 {
 	char buff[2][255];
 	char *timeStamp[2];//记录动捕时间段
 	
-	char *file1 = "D:\\Data\\动捕鼠标按键时间戳.txt";
-	char *file2 = "D:\\Data\\kinect时间戳样本.txt";
-	char *file3 = "D:\\Data\\kinect时间戳样本_New.txt";
+	char *file1 = "\\Data\\动捕鼠标按键时间戳.txt";
+	char *file2 = "\\Data\\kinect时间戳样本.txt";
+	char *file3 = "\\Data\\appwatch时间戳&数据.txt";
 
-	int totalFrame[30];
-	sum_total_frame(file2, totalFrame);
-
-	for (int i = 0; i < 27; i++) {
-		printf("%d\n", totalFrame[i]);
-	}
-
-
+	int *total = NULL;
+	total = new int[50];
+	sum_frames1(file3, total);//appwatch
+	sum_frames2(file2, total);//kinect
+	printf("%d\n", total[0]);
+	
 	//clean_data(file2, file3, 23);
 	
 	//char *temp1 = "2018-11-08 17:21:25.636206";
@@ -156,9 +87,7 @@ int main()
 	//Times time;
 	//time = stamp2standard(1477478145);
 	//printf("%d-%d-%d %d:%d:%d\n", time.Year, time.Mon, time.Day, time.Hour, time.Min, time.Second);
-
-
-	
+		
 	system("pause");
 	return 0;
 }
