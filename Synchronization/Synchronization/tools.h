@@ -28,4 +28,7 @@ void sum_frames1(char *file, int *totalFrames);
 
 void sum_frames2(char *file, int *totalFrames);
 
+
+double Lx(int i, double x, double* Arr);
+
 #endif

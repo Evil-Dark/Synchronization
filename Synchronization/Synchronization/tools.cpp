@@ -146,14 +146,14 @@ void sum_frames1(char *file, int *totalFrames)
 	FILE *fp = NULL;
 	fp = fopen(file, "r");
 
-	char buff[2][255], *temp1, *temp2;
+	char buff[2][1000], *temp1, *temp2;
 	temp1 = buff[0];
 	temp2 = buff[1];
 
-	fgets(buff[0], 255, (FILE*)fp);
+	fgets(buff[0], 1000, (FILE*)fp);
 	int i = 1, j = 0, k = 1;
 
-	while (fgets(buff[k], 255, (FILE*)fp) != NULL) {
+	while (fgets(buff[k], 1000, (FILE*)fp) != NULL) {
 		if (atoi((temp1 + 0)) == atoi((temp2 + 0))) {
 			i++;
 		}
@@ -201,4 +201,17 @@ void sum_frames2(char *file, int *totalFrames)
 	printf("NO.%d Second: %dFrames\n", j + 1, i);
 	printf("total %d Seconds!\n", j+1);
 	fclose(fp);
+}
+
+double Lx(int i, double x, double* Arr)
+{
+	double fenzi = 1, fenmu = 1;
+	for (int k = 0; k<4; k++)
+	{
+		if (k == i)
+			continue;
+		fenzi *= x - Arr[k];
+		fenmu *= Arr[i] - Arr[k];
+	}
+	return fenzi / fenmu;
 }
