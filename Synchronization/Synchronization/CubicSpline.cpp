@@ -17,7 +17,7 @@ CubicSpline::~CubicSpline()
 /**
 * Uses the algorithm described the read me file
 */
-void CubicSpline::Initialize(float * srcX, float * srcY, int size)
+void CubicSpline::Initialize(double * srcX, double * srcY, int size)
 {
 	m_X = srcX;
 	m_Y = srcY;
@@ -25,16 +25,16 @@ void CubicSpline::Initialize(float * srcX, float * srcY, int size)
 
 	Reset();
 
-	m_B = new float[size - 1];
-	m_C = new float[size];
-	m_D = new float[size - 1];
+	m_B = new double[size - 1];
+	m_C = new double[size];
+	m_D = new double[size - 1];
 
-	float * H = new float[size - 1];
-	float * alpha = new float[size - 2];
+	double * H = new double[size - 1];
+	double * alpha = new double[size - 2];
 
-	float * L = new float[size - 2];
-	float * U = new float[size - 1];
-	float * Z = new float[size - 1];
+	double * L = new double[size - 2];
+	double * U = new double[size - 1];
+	double * Z = new double[size - 1];
 
 	for (int i = 0; i < size - 1; i++) {
 		H[i] = srcX[i + 1] - srcX[i];
@@ -70,7 +70,7 @@ void CubicSpline::Initialize(float * srcX, float * srcY, int size)
 /**
 *
 */
-float CubicSpline::Interpolate(float x)
+double CubicSpline::Interpolate(double x)
 {
 	int index = GetIndex(x);
 
@@ -84,7 +84,7 @@ float CubicSpline::Interpolate(float x)
 /**
 *
 */
-int CubicSpline::GetIndex(float x)
+int CubicSpline::GetIndex(double x)
 {
 	int last = m_size - 1;
 	int first = 0;
@@ -105,9 +105,9 @@ int CubicSpline::GetIndex(float x)
 /**
 *
 */
-float CubicSpline::Interpolate(float x, int index)
+double CubicSpline::Interpolate(double x, int index)
 {
-	float y;
+	double y;
 
 	y = m_Y[index] +
 		m_B[index] * (x - m_X[index]) +

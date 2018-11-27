@@ -18,8 +18,6 @@ Times stamp2standard(int stampTime);
 
 Times char2time(char buff[255]);
 
-void add_one_second(char buff[255]);
-
 void clean_data(char* file, char *file_new, int len);
 
 int compare_time(char *time1, char *time2);
@@ -30,5 +28,7 @@ void sum_frames2(char *file, int *totalFrames);
 
 
 double Lx(int i, double x, double* Arr);
+
+float time2stamp(char *time);
 
 #endif

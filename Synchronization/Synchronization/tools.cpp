@@ -2,6 +2,7 @@
 #include "time.h"
 #include "iostream"
 
+using namespace std;
 /*将时间戳转为标准时间*/
 Times stamp2standard(int stampTime)
 {
@@ -62,44 +63,17 @@ Times char2time(char buff[255])
 	return standard;
 }
 
-int add_one(char &ten, char &unit)
+float time2stamp(char *time)
 {
-	if (unit == '9') {
-		unit = '0';
-		if (ten == '5') {
-			ten = '0';
-			return 1;//有进位
-		}
-		else {
-			ten += 1;
-			return 0;//无进位
-		}
-	}
-	else {
-		unit += 1;
-		return 0;//无进位
-	}
-}
-/*时间增加1秒*/
-void add_one_second(char buff[255])
-{
-	char *time = buff;
 	int hour = atoi((time + 11));
+	int min = atoi((time + 14));
+	int sec = atoi((time + 17));
+	int m_sec = atoi((time + 20));
 
-	int temp = add_one(buff[17], buff[18]);
-	if (temp == 1) {
-		temp = add_one(buff[14], buff[15]);
-		if (temp == 1) {
-			if (hour < 23) {
-				add_one(buff[11], buff[12]);
-			}
-			else {
-				*(time + 11) = '0';
-				*(time + 12) = '0';
-			}
-		}
-	}
+	float stamp = hour * 60 * 60 + min * 60 + sec + m_sec / 1000;
+	return stamp;
 }
+
 
 /*清洗数据，除去不需要的内容*/
 void clean_data(char* file, char *file_new, int len)
@@ -171,37 +145,6 @@ void sum_frames1(char *file, int *totalFrames)
 	fclose(fp);
 }
 
-/*帧数统计 for kinect*/
-void sum_frames2(char *file, int *totalFrames)
-{
-	FILE *fp = NULL;
-	fp = fopen(file, "r");
-
-	char buff[2][255], *temp1, *temp2;
-	temp1 = buff[0];
-	temp2 = buff[1];
-
-	fgets(buff[0], 255, (FILE*)fp);
-	add_one_second(buff[0]);
-
-	int i = 1, j = 0;
-	while (fgets(buff[1], 255, (FILE*)fp) != NULL) {
-		if (strncmp(temp1, temp2, 23) == 1) {
-			i++;
-		}
-		else {
-			printf("NO.%d Second: %dFrames\n", j+1, i);
-			*(totalFrames + j) = i;
-			j++;
-			i = 1;
-			add_one_second(buff[0]);
-		}
-	}
-	*(totalFrames + j) = i;
-	printf("NO.%d Second: %dFrames\n", j + 1, i);
-	printf("total %d Seconds!\n", j+1);
-	fclose(fp);
-}
 
 double Lx(int i, double x, double* Arr)
 {
